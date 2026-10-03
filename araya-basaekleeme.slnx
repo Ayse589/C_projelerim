@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="araya-basaekleeme.vcxproj" Id="9d3415ff-b1bb-4ff1-8afe-ccda385334b2" />
+</Solution>
