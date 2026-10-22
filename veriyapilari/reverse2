@@ -1,0 +1,64 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node {
+	int data;
+	struct node* next;
+};
+
+struct node* createNode(int x) {
+	struct node* yeni = (struct node*)malloc(sizeof(struct node));
+	yeni->data = x;
+	yeni->next = NULL;
+	return yeni;
+}
+
+void printlist(struct node* head) {
+	if (head == NULL) {
+		return;
+	}
+	struct node* temp = head;
+	do {
+	printf("%d\n", temp->data);
+		temp = temp->next;
+
+	} while (temp != head);
+	printf("\n");
+}
+
+	static void reverse(struct node** head) {
+		if (*head ==NULL || (*head)->next == *head) {
+			return;
+		}
+	struct node* start = *head;
+	struct node* prev = NULL;
+	struct node* current = start;
+	struct node* next;
+	
+		do{
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+
+		} while (current != start);
+		
+		start->next = prev;
+	*head = prev;
+	
+}
+int main() {
+	struct node* yeni1 = createNode(10);
+	struct node* yeni2 = createNode(20);
+	struct node* yeni3 = createNode(30);
+	struct node* yeni4 = createNode(40);
+	yeni1->next = yeni2;
+	yeni2->next = yeni3;
+	yeni3->next = yeni4;
+	yeni4->next = yeni1;
+	struct node* head = yeni1;
+	reverse(&head);
+	printlist(head);
+	
+
+
+}
