@@ -1,0 +1,206 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node {
+	int data;
+	struct node* next;
+	struct node* prev;
+};
+struct node *createnode(int x) {
+	struct node* yeni = (struct node*)malloc(sizeof(struct node));
+	yeni->data = x;
+	yeni->next = yeni->prev = NULL;
+	return yeni;
+}
+void printlist(struct node* head) {
+	struct node* temp = head;
+	while (temp != NULL) {
+		printf("%d\n", temp->data);
+		temp = temp->next;
+		printf("\n");
+	}
+}
+
+void basaekle(struct node **head,int x) {
+	
+	struct node* yeni = createnode(x);
+	yeni->next =*head;
+(*head)->prev = yeni;
+	*head = yeni;
+}
+
+void arayaekle(struct node* head, int x, int y) {
+	struct node* yeni = createnode(x);
+		
+	struct node* temp = head;
+	while (temp->data == y) {
+		temp = temp->next;
+	}
+	yeni->next = temp->next;
+	yeni->prev = temp;
+	temp->next->prev = yeni;
+	temp->next = yeni;
+}
+void sonaekle(struct node* head, int x) {
+	struct node* yeni = createnode(x);
+	struct node* temp = head;
+	while (temp->next != NULL) {
+		temp = temp->next;
+
+	}
+	yeni->prev = temp;
+	temp->next = yeni;
+}
+void hesapla(struct node **head) {
+	//Soru 4. Bir çift yönlü bağlı listedeki ilk düğümü silip bu düğümün değerini sona yeni düğüm
+	//	olarak ekleyen “hesapla” isimli fonksiyonu yazınız.
+	struct node* temp = *head;
+	int yeni1 = temp->data;
+	(*head) = temp->next;
+	free(temp);
+
+	struct node* yeni = (struct node*)malloc(sizeof(struct node));
+	yeni->next = NULL;
+	yeni->data = yeni1;
+	temp = (*head);
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = yeni;
+	yeni->prev = temp;
+}
+
+void bastansil(struct node** head) {
+
+	//Listenin ilk elemanı(head) silindiğinde, ilk elemandan sonraki düğüm yeni head olur.
+
+	//	Adım Adım Yapılacaklar :
+
+	//Geçici bir temp pointer'ı head'i göstersin(temp = list->head).
+
+	//	head bir sonraki düğüme kaysın(list->head = list->head->next).
+
+	//	Yeni head boş değilse(NULL değilse), onun prev pointer'ı NULL yapılır.
+
+	//	Eğer liste tek elemanlıysa ve o silindiyse, yeni head NULL olur; bu durumda tail da NULL yapılır.
+
+	//	free(temp) ile eski baş düğüm bellekten silinir.
+
+	if (*head == NULL) {
+		return;
+	}
+
+
+	struct node* temp = *head;
+	(*head) = (*head)->next;
+	if (*head != NULL)
+		(*head)->prev = NULL;
+	free(temp);
+}
+
+void aradansil(struct node** head, int x) {
+	if (*head == NULL) {
+		return;
+	}
+	struct node* temp = (*head);
+	while (temp->data != x)
+		temp = temp->next;
+	temp->prev->next = temp->next;
+	temp->next->prev = temp->prev;
+	free(temp);
+}
+
+void sondansil(struct node **head) {
+	if ((*head) == NULL) {
+		return;
+	}
+	if ((*head)->next == *head) {
+		free(*head);
+		*head = NULL;
+		return;
+	}
+	struct node* temp = *head;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->prev->next = NULL;
+	free(temp);
+
+}
+
+
+
+//void cevrimseledonustur(struct   node* head) { // tek yonlulisteyi cevrimsele cevirme
+//	struct node* temp = head;
+//	while (temp->next != NULL) {
+//		temp = temp->next;
+//	}
+//	temp->next = head;
+//}
+
+int main() {
+	struct node *yeni1 = createnode(7);
+	struct node* yeni2 = createnode(17);
+	struct node* yeni3 = createnode(27);
+	yeni1->next = yeni2;
+	yeni2->next = yeni3;
+	yeni3->prev = yeni2;
+	yeni2->prev = yeni1;
+	basaekle(&yeni1, 1);
+	arayaekle(yeni1, 9,17);
+	sonaekle(yeni1, 0);
+	//hesapla(&yeni1);
+	bastansil(&yeni1);
+	aradansil(&yeni1, 17);
+	sondansil(&yeni1);
+	printlist(yeni1);
+
+}
+
+
+
+
+//İlk Düğüm(Head) : Prev işaretçisi NULL gösterir.
+//Son Düğüm(Tail) : Next işaretçisi NULL gösterir.
+
+
+/*
+
+Özellik
+Tek Yönlü Bağlı Liste(Singly Linked List)=İşaretçi SayısıDüğüm başına 1 (Next)
+Çift Yönlü Bağlı Liste(Doubly Linked List)=Düğüm başına 2 
+Dairesel Bağlı Liste(Circular Linked List)(Prev, Next)Düğüm başına 1 veya 2
+Gezinme Yönü
+Sadece ileri 
+Hem ileri hem geri yönlü
+Başlangıca geri dönerek dairesel
+Bellek Kullanım
+Düşük(Daha az pointer)
+Daha yüksek(Fazladan pointer yükü)
+Tek / çift yönlü olmasına bağlı
+Düğüm Silme /
+EklemeÖnceki elemanın adresi bilinmelidir
+Elemanın kendi adresiyle silme /
+ekleme yapılabilirSon 
+/ baş eleman takibi dikkat ister
+Son Eleman Mantığı
+Next pointer'ı NULL
+Next pointer'ı NULL
+Next pointer'ı Head'i gösteri*/
+
+
+/*
+
+Avantajları:
+Çift Yönlü Gezinme : Listede hem ileri hem geri yönde rahatça hareket edilebilir.Kolay Silme İşlemi :
+Bir düğümü silmek için bir önceki düğümü baştan arayarak bulmaya gerek yoktur; silinecek düğümün
+Prev bilgisi zaten eldedir.
+Sona Ekleme / Silme Pratikliği : Tail(son) işaretçisi tutulduğunda, sondan eleman çıkarmak $O(1)$ sürede yapılır.
+
+Dezavantajları : Fazladan Bellek Kullanımı : Her düğümde fazladan bir işaretçi(Prev) 
+tutulduğu için bellek tüketimi artar.
+Karmaşık Kod Yapısı :
+Eleman ekleme veya çıkarma yaparken her iki yöndeki işaretçilerin de doğru güncellenmesi gerekir. (Dikkatsizlik durumunda bağlantı kopmaları oluşabilir).
+
+Nerelerde Kullanılır ? Tarayıcı Geçmişi : "Geri" ve "İleri" butonlarıyla sayfalar arasında gez gezinmek
+.Müzik / Video Oynatıcılar : "Önceki şarkı" ve "Sonraki şarkı" işlevleri.Metin Editörleri 
+: Yapılan işlemleri "Geri Al" (Undo)ve "Yinele" (Redo)mekanizmaları.LRU Cache(En Son Kullanılan Önbellek) :
+////Veriyi hızlıca silme ve öne taşıma gereksinimleri için hash map ile bi*//*rlikte kullanılır.*/
